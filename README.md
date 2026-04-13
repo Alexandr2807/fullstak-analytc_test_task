@@ -1,0 +1,1 @@
+# fullstak-analytc_test_task
