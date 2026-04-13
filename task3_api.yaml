@@ -1,0 +1,148 @@
+openapi: 3.0.3
+info:
+  title: User Registration API
+  version: 1.0.0
+  description: API для регистрации нового пользователя при нажатии кнопки Register.
+
+paths:
+  /api/v1/users/register:
+    post:
+      summary: Регистрация нового пользователя
+      description: Создает нового пользователя в системе после прохождения всех проверок.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+                - confirmPassword
+              properties:
+                firstName:
+                  type: string
+                  description: Имя пользователя
+                  minLength: 1
+                  maxLength: 100
+                lastName:
+                  type: string
+                  description: Фамилия пользователя
+                  minLength: 1
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                  description: Email пользователя
+                  maxLength: 255
+                password:
+                  type: string
+                  format: password
+                  description: Пароль
+                  minLength: 8
+                  maxLength: 64
+                confirmPassword:
+                  type: string
+                  format: password
+                  description: Подтверждение пароля
+                  minLength: 8
+                  maxLength: 64
+      responses:
+        '201':
+          description: Пользователь успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - userId
+                  - firstName
+                  - lastName
+                  - email
+                  - status
+                  - message
+                properties:
+                  userId:
+                    type: string
+                    description: Уникальный идентификатор пользователя
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  status:
+                    type: string
+                    enum: [SUCCESS]
+                  message:
+                    type: string
+                    example: User successfully registered
+
+        '400':
+          description: Ошибка валидации входных данных
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                  - errors
+                properties:
+                  status:
+                    type: string
+                    enum: [ERROR]
+                  message:
+                    type: string
+                    example: Validation error
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - field
+                        - message
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+
+        '409':
+          description: Пользователь с таким email уже существует
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [ERROR]
+                  message:
+                    type: string
+                    example: User with this email already exists
+
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                properties:
+                  status:
+                    type: string
+                    enum: [ERROR]
+                  message:
+                    type: string
+                    example: Internal server error
+
+components: {}
